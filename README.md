@@ -3,5 +3,5 @@
 install `wget`
 
 ```
-wget  | bash -E
+wget https://raw.githubusercontent.com/greflm13/configs/master/install | bash -E
 ```
