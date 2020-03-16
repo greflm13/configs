@@ -1,7 +1,7 @@
 # To use my config
 
-install `wget`
+install `curl`
 
 ```
-wget https://raw.githubusercontent.com/greflm13/configs/master/install | bash -E
+curl https://raw.githubusercontent.com/greflm13/configs/master/install | bash -
 ```
