@@ -18,12 +18,12 @@ if [ -x "$(command -v zypper)" ];
     then zypper install wget jq; fi
 if [ -x "$(command -v pacman)" ]; 
     then {
-        sudo pacman -Syu git
+        yes | sudo pacman -Syu git
         cd /tmp
         git clone https://aur.archlinux.org/yay.git
         cd yay
-        makepkg -si
-        yay -Syu code nodejs npm
+        yes | makepkg -si
+        yes | yay -Syu code nodejs npm
     }; fi
 
 mkdir "${HOME}/.npm-packages"
