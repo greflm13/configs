@@ -1,0 +1,31 @@
+#!/bin/bash
+if [ -x "$(command -v apk)" ]; 
+    then apk add --no-cache wget jq; fi
+if [ -x "$(command -v apt-get)" ];
+    then {
+        sudo apt-get update
+        sudo apt-get install software-properties-common apt-transport-https curl
+        wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+        sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+        sudo apt update
+        sudo apt install code
+        curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+    }; fi
+if [ -x "$(command -v dnf)" ]; 
+    then dnf install wget jq; fi
+if [ -x "$(command -v zypper)" ]; 
+    then zypper install wget jq; fi
+if [ -x "$(command -v pacman)" ]; 
+    then {
+        sudo pacman -Syu git
+        cd /tmp
+        git clone https://aur.archlinux.org/yay.git
+        cd yay
+        makepkg -si
+        yay -Syu code nodejs npm
+    }; fi
+
+mkdir "${HOME}/.npm-packages"
+npm config set prefix "${HOME}/.npm-packages"
+wget -O "${HOME}/.bashrc" https://raw.githubusercontent.com/greflm13/configs/master/.bashrc
