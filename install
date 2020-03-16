@@ -1,4 +1,5 @@
 #!/bin/bash
+cp .bashrc "${HOME}/.bashrc"
 if [ -x "$(command -v apk)" ]; 
     then apk add --no-cache curl ; fi
 if [ -x "$(command -v apt-get)" ];
@@ -27,4 +28,3 @@ if [ -x "$(command -v pacman)" ];
 
 mkdir "${HOME}/.npm-packages"
 npm config set prefix "${HOME}/.npm-packages"
-curl https://raw.githubusercontent.com/greflm13/configs/master/.bashrc > "${HOME}/.bashrc"
