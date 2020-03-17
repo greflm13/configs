@@ -21,6 +21,7 @@ if [ -x "$(command -v apt-get)" ];
         sudo apt-get update
         curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
         sudo apt-get install -y nodejs code
+	DONE=true
     }; fi
 if [ -x "$(command -v dnf)" ]; 
     then {
@@ -32,6 +33,7 @@ if [ -x "$(command -v dnf)" ];
 	sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
 	sudo dnf check-update
 	sudo dnf install -y code nodejs
+	DONE=true
     }; fi
 if [ -x "$(command -v zypper)" ]; 
     then {
@@ -41,6 +43,7 @@ if [ -x "$(command -v zypper)" ];
 	sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ntype=rpm-md\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/zypp/repos.d/vscode.repo'
 	sudo zypper refresh
 	sudo zypper install -y code nodejs4
+	DONE=true
     }; fi
 if [ -x "$(command -v pacman)" ]; 
     then {
@@ -49,10 +52,12 @@ if [ -x "$(command -v pacman)" ];
         cd yay
         makepkg -si
         yay -Syu code nodejs npm
+	DONE=true
     }; fi
 if [ -x "$(command -v eopkg)" ];
     then {
         sudo eopkg install vscode nodejs
+	DONE=true
     }; fi
 
 if [ -x "$(command -v yum)" && -v DNF ];
@@ -64,7 +69,11 @@ if [ -x "$(command -v yum)" && -v DNF ];
 	sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
 	yum check-update
 	sudo yum install -y code nodejs
+	DONE=true
     }; fi
 
-mkdir "${HOME}/.npm-packages"
-npm config set prefix "${HOME}/.npm-packages"
+if [ -v DONE && -x "$(command -v npm --version)" ];
+    then {
+	mkdir "${HOME}/.npm-packages"
+	npm config set prefix "${HOME}/.npm-packages"
+    }; fi
