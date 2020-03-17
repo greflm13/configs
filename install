@@ -1,7 +1,9 @@
 #!/bin/bash
 cp .bashrc "${HOME}/.bashrc"
 if [ -x "$(command -v apk)" ]; 
-    then apk add --no-cache curl ; fi
+    then {
+	echo "apk not supported yet"
+    }; fi
 if [ -x "$(command -v apt-get)" ];
     then {
 	if [ -e /etc/os-release ];
@@ -13,18 +15,33 @@ if [ -x "$(command -v apt-get)" ];
 			then exit; fi
 		}; fi
         sudo apt-get update
-        sudo apt-get install software-properties-common apt-transport-https curl
+        sudo apt-get install -y software-properties-common apt-transport-https curl
         curl -sL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
         sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-        sudo apt update
-        sudo apt install code
+        sudo apt-get update
         curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-        sudo apt-get install -y nodejs
+        sudo apt-get install -y nodejs code
     }; fi
 if [ -x "$(command -v dnf)" ]; 
-    then dnf install curl ; fi
+    then {
+	DNF=true
+	sudo dnf check-update
+	sudo dnf install -y curl gcc-c++ make
+	curl -sL https://rpm.nodesource.com/setup_13.x | sudo bash -
+	sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+	sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+	sudo dnf check-update
+	sudo dnf install -y code nodejs
+    }; fi
 if [ -x "$(command -v zypper)" ]; 
-    then zypper install curl ; fi
+    then {
+	sudo zypper refresh
+	sudo zypper install -y curl
+	sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+	sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ntype=rpm-md\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/zypp/repos.d/vscode.repo'
+	sudo zypper refresh
+	sudo zypper install -y code nodejs4
+    }; fi
 if [ -x "$(command -v pacman)" ]; 
     then {
         cd /tmp
@@ -36,6 +53,17 @@ if [ -x "$(command -v pacman)" ];
 if [ -x "$(command -v eopkg)" ];
     then {
         sudo eopkg install vscode nodejs
+    }; fi
+
+if [ -x "$(command -v yum)" && -v DNF ];
+    then {
+	sudo yum check-update
+	sudo yum install -y curl gcc-c++ make
+	curl -sL https://rpm.nodesource.com/setup_13.x | sudo bash -
+	sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+	sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+	yum check-update
+	sudo yum install -y code nodejs
     }; fi
 
 mkdir "${HOME}/.npm-packages"
