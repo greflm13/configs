@@ -65,7 +65,7 @@ if [ -x "$(command -v eopkg)" ];
 	DONE=true
     }; fi
 
-if [ -x "$(command -v yum)" ] && ![ -v DNF ];
+if [ -x "$(command -v yum)" ] && [ -z DNF ];
     then {
     	echo "installing using yum"
 	sudo yum check-update
