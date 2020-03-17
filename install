@@ -78,8 +78,9 @@ if [ -x "$(command -v yum)" ] && [ -z DNF ];
 	DONE=true
     }; fi
 
-if [ -v ${DONE} ] && [ -x "$(command -v npm)" ];
+if [ -v DONE ] && [ -x "$(command -v npm)" ];
     then {
+    	echo "creating non sudo npm storage"
 	mkdir "${HOME}/.npm-packages"
 	npm config set prefix "${HOME}/.npm-packages"
     }; fi
