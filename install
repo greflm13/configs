@@ -60,7 +60,7 @@ if [ -x "$(command -v eopkg)" ];
 	DONE=true
     }; fi
 
-if [[ -x "$(command -v yum)" && -v DNF ]];
+if [ -x "$(command -v yum)" ] && [ -v DNF ];
     then {
 	sudo yum check-update
 	sudo yum install -y curl gcc-c++ make
@@ -72,7 +72,7 @@ if [[ -x "$(command -v yum)" && -v DNF ]];
 	DONE=true
     }; fi
 
-if [[ -v DONE && -x "$(command -v npm)" ]];
+if [ -v ${DONE} ] && [ -x "$(command -v npm)" ];
     then {
 	mkdir "${HOME}/.npm-packages"
 	npm config set prefix "${HOME}/.npm-packages"
