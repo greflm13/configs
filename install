@@ -72,7 +72,7 @@ if [ -x "$(command -v yum)" && -v DNF ];
 	DONE=true
     }; fi
 
-if [ -v DONE && -x "$(command -v npm --version)" ];
+if [ -v DONE && -x "$(command -v npm)" ];
     then {
 	mkdir "${HOME}/.npm-packages"
 	npm config set prefix "${HOME}/.npm-packages"
