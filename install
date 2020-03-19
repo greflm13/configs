@@ -6,14 +6,6 @@ if [ -x "$(command -v apk)" ];
     }; fi
 if [ -x "$(command -v apt-get)" ];
     then {
-	if [ -e /etc/os-release ];
-		then {
-		source /etc/os-release
-		if [[ "$TAILS_PRODUCT_NAME" =~ Tails ]];
-			git config --global user.name "amnesia"
-			git config --global user.email "amnesia@amnesia"
-			then exit; fi
-		}; fi
 	echo "installing using apt-get"
         sudo apt-get update
         sudo apt-get install -y software-properties-common apt-transport-https curl
