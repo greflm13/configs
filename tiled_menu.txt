@@ -1,0 +1,100 @@
+{
+  "fullscreen": false,
+  "icon": "start-here-kde",
+  "fixedPanelIcon": true,
+  "searchResultsMerged": true,
+  "showRecentApps": true,
+  "recentOrdering": 1,
+  "numRecentApps": 5,
+  "sidebarShortcuts": [
+    "xdg:DOCUMENTS",
+    "xdg:PICTURES",
+    "org.kde.dolphin.desktop",
+    "systemsettings.desktop"
+  ],
+  "defaultAppListView": "Alphabetical",
+  "tileModel": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 2,
+      "h": 2,
+      "url": "spotify.desktop",
+      "backgroundColor": "#159041"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "w": 2,
+      "h": 2,
+      "url": "steam.desktop",
+      "backgroundColor": "#1973b6"
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "w": 2,
+      "h": 2,
+      "url": "code-oss.desktop",
+      "backgroundColor": "#167abf"
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "w": 2,
+      "h": 2,
+      "url": "discord.desktop",
+      "backgroundColor": "#5d75c5"
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "w": 2,
+      "h": 2,
+      "url": "android-studio.desktop",
+      "backgroundColor": "#589c2b"
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "w": 2,
+      "h": 2,
+      "url": "blender.desktop",
+      "backgroundColor": "#de7036"
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "w": 2,
+      "h": 2,
+      "url": "signal-desktop.desktop",
+      "backgroundColor": "#4a81f0"
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "w": 2,
+      "h": 2,
+      "url": "gimp.desktop",
+      "label": "GIMP",
+      "backgroundColor": "#836c50"
+    }
+  ],
+  "tileMargin": 5,
+  "tilesLocked": true,
+  "defaultTileColor": "",
+  "defaultTileGradient": false,
+  "sidebarBackgroundColor": "",
+  "searchFieldFollowsTheme": true,
+  "sidebarFollowsTheme": false,
+  "tileLabelAlignment": "left",
+  "appDescription": "after",
+  "menuItemHeight": 36,
+  "searchFieldHeight": 30,
+  "appListWidth": 250,
+  "favGridCols": 4,
+  "popupHeight": 604.0009842519686,
+  "sidebarButtonSize": 48,
+  "sidebarIconSize": 30,
+  "sidebarPopupButtonSize": 36
+}
