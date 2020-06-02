@@ -43,7 +43,7 @@ if [ -x "$(command -v zypper)" ];
 if [ -x "$(command -v pacman)" ]; 
     then {
     	echo "installing using pacman"
-	pacman -S yay
+	sudo pacman -S yay
         yay -Syu code nodejs npm git
 	DONE=true
     }; fi
