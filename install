@@ -69,9 +69,9 @@ if [ -x "$(command -v yum)" ] && [ -z DNF ];
 
 if [ -v DONE ] && [ -x "$(command -v npm)" ];
     then {
+	cp .pureline.conf ~/.pureline.conf
     	cd
     	git clone https://github.com/chris-marsh/pureline.git
-	cp pureline/configs/powerline_full_256col.conf ~/.pureline.conf
     	echo "creating non sudo npm storage"
 	mkdir "${HOME}/.npm-packages"
 	npm config set prefix "${HOME}/.npm-packages"
