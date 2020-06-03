@@ -73,6 +73,6 @@ if [ -v DONE ] && [ -x "$(command -v npm)" ];
     	cd
     	git clone https://github.com/chris-marsh/pureline.git
     	echo "creating non sudo npm storage"
-	mkdir "${HOME}/.npm-packages"
+	mkdir -p "${HOME}/.npm-packages"
 	npm config set prefix "${HOME}/.npm-packages"
     }; fi
