@@ -5,7 +5,7 @@
 [[ $- != *i* ]] && return
 
 (wal -r)
-neofetch
+screenfetch
 
 colors() {
 	local fgc bgc vals seq0
