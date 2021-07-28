@@ -1,5 +1,8 @@
 #!/bin/bash
 cp .bashrc "${HOME}/.bashrc"
+cp .vimrc "${HOME}/.vimrc"
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
 if [ -x "$(command -v apk)" ]; 
     then {
 	echo "apk not supported yet"
@@ -43,8 +46,11 @@ if [ -x "$(command -v zypper)" ];
 if [ -x "$(command -v pacman)" ]; 
     then {
     	echo "installing using pacman"
-	sudo pacman -S yay
-        yay -Syu code nodejs npm screenfetch wal
+        sudo pacman -S git base-devel
+        git clone https://aur.archlinux.org/yay.git
+        cd yay && makepkg -si && cd ..
+        rm -rf yay
+        yay -Syu code screenfetch npm
 	DONE=true
     }; fi
 if [ -x "$(command -v eopkg)" ];
@@ -69,10 +75,10 @@ if [ -x "$(command -v yum)" ] && [ -z DNF ];
 
 if [ -v DONE ] && [ -x "$(command -v npm)" ];
     then {
-	cp .pureline.conf ~/.pureline.conf
+	    cp .pureline.conf ~/.pureline.conf
     	cd
     	git clone https://github.com/chris-marsh/pureline.git
     	echo "creating non sudo npm storage"
-	mkdir -p "${HOME}/.npm-packages"
-	npm config set prefix "${HOME}/.npm-packages"
+	    mkdir -p "${HOME}/.npm-packages"
+	    npm config set prefix "${HOME}/.npm-packages"
     }; fi

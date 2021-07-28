@@ -4,7 +4,6 @@
 
 [[ $- != *i* ]] && return
 
-(wal -r)
 screenfetch
 
 colors() {
