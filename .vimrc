@@ -8,7 +8,7 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'sheerun/vim-polyglot'
-Plug 'greflm13/monokai-vibrant'
+Plug 'greflm13/monokai_vibrant'
 Plug 'itchyny/lightline.vim'
 
 call plug#end()
@@ -26,7 +26,7 @@ colorscheme monokai_vibrant
 
 " ===== lightline config =====
 let g:lightline = {
-    \ 'colorscheme': 'monokai_vibrant',
+    \ 'colorscheme': 'lightline_monokai_vibrant',
     \ 'active': {
     \ 'left': [ ['mode'], ['filename'] ],
     \ 'right': [ ['filetype'] ]},
