@@ -5,6 +5,13 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+export PATH="${HOME}/.local/bin:$PATH"
+export VISUAL=vim
+export EDITOR="$VISUAL"
+export HISTSIZE=-1
+export HISTFILESIZE=-1
+export HISTCONTROL="erasedups"
+
 [[ -f ~/.colorscripts ]] && source ~/.colorscripts
 
 if command -v "uwufetch" >/dev/null; then
@@ -88,11 +95,6 @@ alias more=less
 alias fuck='sudo $(fc -ln -1)'
 alias please='sudo'
 
-export VISUAL=vim
-export EDITOR="$VISUAL"
-export HISTSIZE=-1
-export HISTFILESIZE=-1
-export HISTCONTROL="erasedups"
 shopt -s histappend
 shopt -s checkwinsize
 shopt -s expand_aliases

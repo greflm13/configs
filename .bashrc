@@ -4,6 +4,13 @@
 
 [[ $- != *i* ]] && return
 
+export PATH="${HOME}/.local/bin:$PATH"
+export VISUAL=vim
+export EDITOR="$VISUAL"
+export HISTSIZE=-1
+export HISTFILESIZE=-1
+export HISTCONTROL="erasedups"
+
 [[ -f ~/.colorscripts ]] && source ~/.colorscripts
 
 if command -v "uwufetch" >/dev/null; then
@@ -112,14 +119,8 @@ complete -cf sudo
 # it regains control.  #65623
 # http://cnswww.cns.cwru.edu/~chet/bash/FAQ (E11)
 shopt -s checkwinsize
-
 shopt -s expand_aliases
-
-# export QT_SELECT=4
-
-# Enable history appending instead of overwriting.  #139609
 shopt -s histappend
-
 shopt -s extglob
 
 extract() {
@@ -247,13 +248,6 @@ gitblame() {
 }
 
 [[ -f ~/.pureline.conf ]] && source ~/.pureline/pureline ~/.pureline.conf
-
-export PATH="${HOME}/.local/bin:$PATH"
-export VISUAL=vim
-export EDITOR="$VISUAL"
-export HISTSIZE=-1
-export HISTFILESIZE=-1
-export HISTCONTROL="erasedups"
 
 NPM_PACKAGES="${HOME}/.npm-packages"
 # Preserve MANPATH if you already defined it somewhere in your config.
