@@ -12,6 +12,9 @@ elif command -v "neofetch" >/dev/null; then
 	neofetch
 elif command -v "screenfetch" >/dev/null; then
 	screenfetch
+else
+        uname -a
+        echo ""
 fi
 
 [[ -f ~/.colorscripts ]] && colorpanes
