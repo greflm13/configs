@@ -8,6 +8,8 @@
 
 if command -v "uwufetch" >/dev/null; then
 	uwufetch
+elif command -v "rsfetch" >/dev/null; then
+	rsfetch -PdehrlksuNw
 elif command -v "pfetch" >/dev/null; then
 	pfetch
 elif command -v "ufetch" >/dev/null; then
