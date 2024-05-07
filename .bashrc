@@ -4,11 +4,16 @@
 
 [[ $- != *i* ]] && return
 
-source ~/.colorscripts
+[[ -f ~/.colorscripts ]] && source ~/.colorscripts
 
-screenfetch
+if command -v "uwufetch" >/dev/null; then
+	uwufetch
+elif command -v "screenfetch" >/dev/null; then
+	screenfetch
+fi
 
-colorpanes
+[[ -f ~/.colorscripts ]] && colorpanes
+
 
 [ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
 
@@ -59,9 +64,19 @@ if ${use_color}; then
 	alias egrep='egrep --colour=auto'
 	alias fgrep='fgrep --colour=auto'
 	alias ip='ip -c'
-	alias ll='eza -la'
 	alias icat='icat -m both'
-	alias tree='eza -T'
+	if command -v "eza" >/dev/null; then
+		alias ll='eza -la'
+		alias l='eza -l'
+		alias tree='eza -Tl'
+	elif command -v "exa" >/dev/null; then
+		alias ll='exa -la'
+		alias l='exa -l'
+		alias tree='exa -Tl'
+	else
+		alias ll='ls -lAh --color=auto'
+	fi
+
 else
 	if [[ ${EUID} == 0 ]]; then
 		# show root@ when we don't have colors
@@ -225,13 +240,14 @@ gitblame() {
 	cd "$dir"
 }
 
+[[ -f ~/.pureline.conf ]] && source ~/.pureline/pureline ~/.pureline.conf
+
 export PATH="${HOME}/.local/bin:$PATH"
-source ~/.pureline/pureline ~/.pureline.conf
 export VISUAL=vim
 export EDITOR="$VISUAL"
 export HISTSIZE=-1
 export HISTFILESIZE=-1
-export HISTCONTROL="ignoreboth:erasedups"
+export HISTCONTROL="erasedups"
 
 NPM_PACKAGES="${HOME}/.npm-packages"
 # Preserve MANPATH if you already defined it somewhere in your config.

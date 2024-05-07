@@ -5,6 +5,16 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+[[ -f ~/.colorscripts ]] && source ~/.colorscripts
+
+if command -v "uwufetch" >/dev/null; then
+        uwufetch
+elif command -v "screenfetch" >/dev/null; then
+        screenfetch
+fi
+
+[[ -f ~/.colorscripts ]] && colorpanes
+
 use_color=true
 
 # Set colorful PS1 only on colorful terminals.
@@ -42,7 +52,17 @@ if ${use_color}; then
         alias egrep='egrep --colour=auto'
         alias fgrep='fgrep --colour=auto'
         alias ip='ip -c'
-        alias ll='ls -lAh --color=auto'
+        if command -v "eza" >/dev/null; then
+                alias ll='eza -la'
+                alias l='eza -l'
+                alias tree='eza -Tl'
+        elif command -v "exa" >/dev/null; then
+                alias ll='exa -la'
+                alias l='exa -l'
+                alias tree='exa -Tl'
+        else
+                alias ll='ls -lAh --color=auto'
+        fi
 else
         if [[ ${EUID} == 0 ]]; then
                 # show root@ when we don't have colors
