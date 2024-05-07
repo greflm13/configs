@@ -248,6 +248,8 @@ export EDITOR="$VISUAL"
 export HISTSIZE=-1
 export HISTFILESIZE=-1
 export HISTCONTROL="erasedups"
+shopt -s histappend
+shopt -s checkwinsize
 
 NPM_PACKAGES="${HOME}/.npm-packages"
 # Preserve MANPATH if you already defined it somewhere in your config.

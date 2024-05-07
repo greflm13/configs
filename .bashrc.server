@@ -76,4 +76,12 @@ fi
 
 alias df='df -Th'
 
+export VISUAL=vim
+export EDITOR="$VISUAL"
+export HISTSIZE=-1
+export HISTFILESIZE=-1
+export HISTCONTROL="erasedups"
+shopt -s histappend
+shopt -s checkwinsize
+
 unset use_color safe_term match_lhs sh
