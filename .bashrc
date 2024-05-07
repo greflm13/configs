@@ -89,13 +89,11 @@ fi
 unset use_color safe_term match_lhs sh
 
 alias cp="cp -i"     # confirm before overwriting something
-alias free='free -m' # show sizes in MB
+alias free='free -h'
 alias more=less
 alias fuck='sudo $(fc -ln -1)'
 alias please='sudo'
 alias df='df -Th'
-alias gitdir='cd ${HOME}/git'
-alias ayay='yay'
 
 xhost +local:root >/dev/null 2>&1
 
@@ -248,8 +246,6 @@ export EDITOR="$VISUAL"
 export HISTSIZE=-1
 export HISTFILESIZE=-1
 export HISTCONTROL="erasedups"
-shopt -s histappend
-shopt -s checkwinsize
 
 NPM_PACKAGES="${HOME}/.npm-packages"
 # Preserve MANPATH if you already defined it somewhere in your config.
