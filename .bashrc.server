@@ -4,6 +4,8 @@
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
+[[ -f /usr/share/blesh/ble.sh ]] && [[ $- == *i* ]] &&
+        source "/usr/share/blesh/ble.sh" --rcfile "$HOME/.blerc" --noattach
 
 export PATH="${HOME}/.local/bin:$PATH"
 export VISUAL=vim
@@ -103,3 +105,9 @@ shopt -s expand_aliases
 shopt -s extglob
 
 unset use_color safe_term match_lhs sh
+
+[[ ${BLE_VERSION-} ]] && ble-attach
+
+if command -v atuin >/dev/null; then
+        eval "$(atuin init bash)"
+fi

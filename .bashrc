@@ -3,6 +3,8 @@
 #
 
 [[ $- != *i* ]] && return
+[[ -f /usr/share/blesh/ble.sh ]] && [[ $- == *i* ]] &&
+	source "/usr/share/blesh/ble.sh" --rcfile "$HOME/.blerc" --noattach
 
 export PATH="${HOME}/.local/bin:$PATH"
 export VISUAL=vim
@@ -249,9 +251,11 @@ gitblame() {
 
 case ${TERM} in
 xterm* | rxvt* | Eterm* | aterm | kterm | gnome* | interix | konsole*)
-        [[ -f ~/.pureline.conf ]] && source ~/.pureline/pureline ~/.pureline.conf
-        ;;
+	[[ -f ~/.pureline.conf ]] && source ~/.pureline/pureline ~/.pureline.conf
+	;;
 esac
+
+[[ ${BLE_VERSION-} ]] && ble-attach
 
 # Preserve MANPATH if you already defined it somewhere in your config.
 # Otherwise, fall back to `manpath` so we can inherit from `/etc/manpath`.
@@ -268,9 +272,9 @@ export PATH="$PATH:$GOPATH"
 export GPG_TTY=$(tty)
 
 if command -v pyenv >/dev/null; then
-                export PYENV_ROOT="$HOME/.pyenv"
-                [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-        eval "$(pyenv init -)"
+	export PYENV_ROOT="$HOME/.pyenv"
+	[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+	eval "$(pyenv init -)"
 fi
 
 # pnpm
@@ -283,5 +287,9 @@ esac
 
 # Load Angular CLI autocompletion.
 if command -v ng >/dev/null; then
-        source <(ng completion script)
+	source <(ng completion script)
+fi
+
+if command -v atuin >/dev/null; then
+	eval "$(atuin init bash)"
 fi
