@@ -68,13 +68,13 @@ if ${use_color}; then
         alias fgrep='fgrep --colour=auto'
         alias ip='ip -c'
         if command -v "eza" >/dev/null; then
-                alias ll='eza -la'
-                alias l='eza -l'
-                alias tree='eza -Tl'
+                alias ll='eza -la --icons'
+                alias l='eza -l --icons'
+                alias tree='eza -Tl --icons'
         elif command -v "exa" >/dev/null; then
-                alias ll='exa -la'
-                alias l='exa -l'
-                alias tree='exa -Tl'
+                alias ll='exa -la --icons'
+                alias l='exa -l --icons'
+                alias tree='exa -Tl --icons'
         else
                 alias ll='ls -lAh --color=auto'
         fi
@@ -94,6 +94,8 @@ alias free='free -h'
 alias more=less
 alias fuck='sudo $(fc -ln -1)'
 alias please='sudo'
+
+complete -cf sudo
 
 shopt -s histappend
 shopt -s checkwinsize

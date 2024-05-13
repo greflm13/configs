@@ -81,13 +81,13 @@ if ${use_color}; then
 	alias ip='ip -c'
 	alias icat='icat -m both'
 	if command -v "eza" >/dev/null; then
-		alias ll='eza -la'
-		alias l='eza -l'
-		alias tree='eza -Tl'
+		alias ll='eza -la --icons'
+		alias l='eza -l --icons'
+		alias tree='eza -Tl --icons'
 	elif command -v "exa" >/dev/null; then
-		alias ll='exa -la'
-		alias l='exa -l'
-		alias tree='exa -Tl'
+		alias ll='exa -la --icons'
+		alias l='exa -l --icons'
+		alias tree='exa -Tl --icons'
 	else
 		alias ll='ls -lAh --color=auto'
 	fi
@@ -247,10 +247,41 @@ gitblame() {
 	cd "$dir"
 }
 
-[[ -f ~/.pureline.conf ]] && source ~/.pureline/pureline ~/.pureline.conf
+case ${TERM} in
+xterm* | rxvt* | Eterm* | aterm | kterm | gnome* | interix | konsole*)
+        [[ -f ~/.pureline.conf ]] && source ~/.pureline/pureline ~/.pureline.conf
+        ;;
+esac
 
-NPM_PACKAGES="${HOME}/.npm-packages"
 # Preserve MANPATH if you already defined it somewhere in your config.
 # Otherwise, fall back to `manpath` so we can inherit from `/etc/manpath`.
 export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
+
+NPM_PACKAGES="${HOME}/.npm-packages"
+export PATH="$PATH:$NPM_PACKAGES/bin"
+
+export GOPATH="${HOME}/.go"
+export PATH="$PATH:$GOPATH"
+
+[[ -f /opt/asdf-vm/asdf.sh ]] && . /opt/asdf-vm/asdf.sh
+
 export GPG_TTY=$(tty)
+
+if command -v pyenv >/dev/null; then
+                export PYENV_ROOT="$HOME/.pyenv"
+                [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+        eval "$(pyenv init -)"
+fi
+
+# pnpm
+export PNPM_HOME="${HOME}/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+# Load Angular CLI autocompletion.
+if command -v ng >/dev/null; then
+        source <(ng completion script)
+fi
