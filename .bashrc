@@ -3,8 +3,14 @@
 #
 
 [[ $- != *i* ]] && return
-[[ -f /usr/share/blesh/ble.sh ]] && [[ $- == *i* ]] &&
-	source "/usr/share/blesh/ble.sh" --rcfile "$HOME/.blerc" --noattach
+
+if ! [ -f $HOME/.local/share/blesh/ble.sh ]; then
+        git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git /tmp/ble.sh
+        make -C /tmp/ble.sh install PREFIX=~/.local
+fi
+
+[[ $- == *i* ]] &&
+  source "$HOME/.local/share/blesh/ble.sh" --rcfile "$HOME/.blerc" --noattach
 
 export PATH="${HOME}/.local/bin:$PATH"
 export VISUAL=vim
