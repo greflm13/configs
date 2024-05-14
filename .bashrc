@@ -5,8 +5,9 @@
 [[ $- != *i* ]] && return
 
 if ! [ -f $HOME/.local/share/blesh/ble.sh ]; then
-        git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git /tmp/ble.sh
-        make -C /tmp/ble.sh install PREFIX=~/.local
+	git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git /tmp/ble.sh
+	make -C /tmp/ble.sh install PREFIX=~/.local
+	touch "$HOME/.blerc"
 fi
 
 [[ $- == *i* ]] &&
