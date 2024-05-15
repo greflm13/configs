@@ -1,0 +1,40 @@
+#!/bin/bash
+[[ -f /etc/os-release ]] && source /etc/os-release
+
+[[ ${ID_LIKE-} ]] && ID=$ID_LIKE
+
+[[ ! ${ID-} ]] && exit 1
+
+case $ID in
+	"arch")
+		echo "archlinux"
+		CURR=$(pwd)
+		REQ=(
+			git
+			gawk
+			make
+		)
+		MIS=()
+		for cmd in $REQ; do
+			if ! command -v $cmd >/dev/null; then
+				MIS+=("$cmd")
+			fi
+		done
+		if ((${#MIS[@]} != 0)); then
+			sudo pacman -S base-devel git gawk --noconfirm
+		fi
+		if ! command -v paru >/dev/null; then
+			git clone https://aur.archlinux.org/paru.git /tmp/paru
+			cd /tmp/paru && makepkg -si && cd $CURR
+		fi
+		;;
+	"debian")
+		echo "debian"
+		;;
+	*"fedora")
+		echo "fedora"
+		;;
+	*)
+		echo "unsupported"
+		;;
+esac
