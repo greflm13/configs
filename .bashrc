@@ -36,10 +36,8 @@ if [[ ${EUID} != 0 ]]; then
 	elif command -v "screenfetch" >/dev/null; then
 		screenfetch
 	fi
+	[[ -f ~/.colorscripts ]] && colorpanes
 fi
-
-[[ -f ~/.colorscripts ]] && colorpanes
-
 
 [ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
 
