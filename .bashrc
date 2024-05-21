@@ -78,9 +78,9 @@ if ${use_color}; then
 	fi
 
 	if [[ ${EUID} == 0 ]]; then
-		PS1='\[\033[1;31m\]\u@\h\[\033[37m\]:\[\033[34m\]\w\[\033[0;37m\]\$ '
+		PS1='\[\033[1;31m\]\u@\h\[\033[0m\]:\[\033[34m\]\w\[\033[0m\]\$ '
 	else
-		PS1='\[\033[1;32m\]\u@\h\[\033[37m\]:\[\033[34m\]\w\[\033[0;37m\]\$ '
+		PS1='\[\033[1;32m\]\u@\h\[\033[0m\]:\[\033[34m\]\w\[\033[0m\]\$ '
 	fi
 
 	alias ls='ls --color=auto'
@@ -221,7 +221,7 @@ gitpull() {
 	dir=$(pwd)
 	for folder in $(find "$HOME/git" -maxdepth 3 -mindepth 3 -type d | sort); do
 		cd $folder
-		pwd
+		echo -e "\033[0;34m$(pwd)\033[0m"
 		git pull
 	done
 	cd "$dir"
