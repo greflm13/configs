@@ -1,0 +1,36 @@
+[checkout]
+	workers = 0 # As many as cores
+[column]
+	ui = auto
+[commit]
+	gpgSign = true
+[core]
+	compression = 9
+	editor = vim
+[diff]
+	renames = copies
+[fetch]
+	parallel = 0
+[init]
+	defaultBranch = main
+[merge]
+	guitool = vimdiff2
+[pull]
+	ff = true
+	rebase = true
+[push]
+	autoSetupRemote = true
+	gpgSign = if-asked
+[rebase]
+	autoStash = true
+[status]
+	showStash = true
+
+[user]
+#	email = florian.greistorfer@cancom.com
+	name = Flo Greistorfer
+	signingkey = 65BA18EB3738BD5EEDC55E44331DFBE683712DC9
+[author]
+	email = flo.greistorfer@sorogon.eu
+[committer]
+	email = florian.greistorfer@cancom.com
