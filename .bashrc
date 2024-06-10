@@ -264,6 +264,8 @@ esac
 
 [[ ${BLE_VERSION-} ]] && ble-attach
 
+command -v 1password >/dev/null && export SSH_AUTH_SOCK=~/.1password/agent.sock
+
 # Preserve MANPATH if you already defined it somewhere in your config.
 # Otherwise, fall back to `manpath` so we can inherit from `/etc/manpath`.
 export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
