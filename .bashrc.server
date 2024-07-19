@@ -105,6 +105,8 @@ alias more=less
 alias fuck='sudo $(fc -ln -1)'
 alias please='sudo'
 
+command -v lxc >/dev/null && alias lxl='lxc list -c ns46u,limits.cpu:cpu,m,limits.memory:MEMORY,D,config:image.os,config:image.release'
+
 complete -cf sudo
 
 shopt -s histappend
