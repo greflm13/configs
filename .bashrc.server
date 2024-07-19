@@ -5,40 +5,12 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-if ! [ -f $HOME/.local/share/blesh/ble.sh ]; then
-        git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git /tmp/ble.sh
-        make -C /tmp/ble.sh install PREFIX=~/.local
-        touch "$HOME/.blerc"
-fi
-
-[[ $- == *i* ]] &&
-  source "$HOME/.local/share/blesh/ble.sh" --rcfile "$HOME/.blerc" --noattach
-
 export PATH="${HOME}/.local/bin:$PATH"
 export VISUAL=vim
 export EDITOR="$VISUAL"
 export HISTSIZE=-1
 export HISTFILESIZE=-1
 export HISTCONTROL="erasedups"
-
-[[ -f ~/.colorscripts ]] && source ~/.colorscripts
-
-if [[ ${EUID} == 0 ]]; then
-        if command -v "uwufetch" >/dev/null; then
-                uwufetch
-        elif command -v "rsfetch" >/dev/null; then
-                rsfetch -PdehrlksuN
-        elif command -v "pfetch" >/dev/null; then
-                pfetch
-        elif command -v "ufetch" >/dev/null; then
-                ufetch
-        elif command -v "neofetch" >/dev/null; then
-                neofetch
-        elif command -v "screenfetch" >/dev/null; then
-                screenfetch
-        fi
-        [[ -f ~/.colorscripts ]] && colorpanes
-fi
 
 use_color=true
 
@@ -115,9 +87,3 @@ shopt -s expand_aliases
 shopt -s extglob
 
 unset use_color safe_term match_lhs sh
-
-[[ ${BLE_VERSION-} ]] && ble-attach
-
-if command -v atuin >/dev/null; then
-        eval "$(atuin init bash)"
-fi
