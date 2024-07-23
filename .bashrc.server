@@ -5,6 +5,28 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Install ble.sh if not present
+if ! [ -f "${HOME}/.local/share/blesh/ble.sh" ]; then
+    deps=(git make gawk)
+    fail=0
+    
+    for dep in "${deps[@]}"; do
+        if ! command -v "$dep" >/dev/null; then
+            echo "Missing dependency: $dep"
+            fail=1
+        fi
+    done
+    if [ $fail -eq 0 ]; then
+        echo "First time setting up ble.sh"
+        git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git /tmp/ble.sh >/dev/null
+        make -C /tmp/ble.sh install PREFIX=~/.local >/dev/null
+        touch "${HOME}/.blerc"
+        rm -rf /tmp/ble.sh
+    fi
+fi
+
+[[ $- == *i* ]] && [ -f "${HOME}/.local/share/blesh/ble.sh" ] && source "$HOME/.local/share/blesh/ble.sh" --rcfile "$HOME/.blerc" --noattach
+
 export PATH="${HOME}/.local/bin:$PATH"
 export VISUAL=vim
 export EDITOR="$VISUAL"
@@ -23,52 +45,51 @@ safe_term=${TERM//[^[:alnum:]]/?} # sanitize TERM
 match_lhs=""
 [[ -f ~/.dir_colors ]] && match_lhs="${match_lhs}$(<~/.dir_colors)"
 [[ -f /etc/DIR_COLORS ]] && match_lhs="${match_lhs}$(</etc/DIR_COLORS)"
-[[ -z ${match_lhs} ]] &&
-        type -P dircolors >/dev/null &&
-        match_lhs=$(dircolors --print-database)
+[[ -z ${match_lhs} ]] && type -P dircolors >/dev/null &&
+match_lhs=$(dircolors --print-database)
 [[ $'\n'${match_lhs} == *$'\n'"TERM "${safe_term}* ]] && use_color=true
 
 if ${use_color}; then
-        # Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
-        if type -P dircolors >/dev/null; then
-                if [[ -f ~/.dir_colors ]]; then
-                        eval "$(dircolors -b ~/.dir_colors)"
-                elif [[ -f /etc/DIR_COLORS ]]; then
-                        eval "$(dircolors -b /etc/DIR_COLORS)"
-                fi
+    # Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
+    if type -P dircolors >/dev/null; then
+        if [[ -f ~/.dir_colors ]]; then
+            eval "$(dircolors -b ~/.dir_colors)"
+            elif [[ -f /etc/DIR_COLORS ]]; then
+            eval "$(dircolors -b /etc/DIR_COLORS)"
         fi
-
-        if [[ ${EUID} == 0 ]]; then
-                PS1='\[\033[1;31m\]\u@\h\[\033[0m\]:\[\033[34m\]\w\[\033[0m\] \$ '
-        else
-                PS1='\[\033[1;32m\]\u@\h\[\033[0m\]:\[\033[34m\]\w\[\033[0m\] \$ '
-        fi
-
-        alias ls='ls --color=auto'
-        alias grep='grep --colour=auto'
-        alias egrep='egrep --colour=auto'
-        alias fgrep='fgrep --colour=auto'
-        alias ip='ip -c'
-        if command -v "eza" >/dev/null; then
-                alias ll='eza -la --icons'
-                alias l='eza -l --icons'
-                alias tree='eza -Tl --icons'
+    fi
+    
+    if [[ ${EUID} == 0 ]]; then
+        PS1='\[\033[1;31m\]\u@\h\[\033[0m\]:\[\033[34m\]\w\[\033[0m\] \$ '
+    else
+        PS1='\[\033[1;32m\]\u@\h\[\033[0m\]:\[\033[34m\]\w\[\033[0m\] \$ '
+    fi
+    
+    alias ls='ls --color=auto'
+    alias grep='grep --colour=auto'
+    alias egrep='egrep --colour=auto'
+    alias fgrep='fgrep --colour=auto'
+    alias ip='ip -c'
+    if command -v "eza" >/dev/null; then
+        alias ll='eza -la --icons'
+        alias l='eza -l --icons'
+        alias tree='eza -Tl --icons'
         elif command -v "exa" >/dev/null; then
-                alias ll='exa -la --icons'
-                alias l='exa -l --icons'
-                alias tree='exa -Tl --icons'
-        else
-                alias ll='ls -lAh --color=auto'
-        fi
+        alias ll='exa -la --icons'
+        alias l='exa -l --icons'
+        alias tree='exa -Tl --icons'
+    else
+        alias ll='ls -lAh --color=auto'
+    fi
 else
-        if [[ ${EUID} == 0 ]]; then
-                # show root@ when we don't have colors
-                PS1='\u@\h \W \$ '
-        else
-                PS1='\u@\h \w \$ '
-        fi
-
-        alias ll='ls -lAh'
+    if [[ ${EUID} == 0 ]]; then
+        # show root@ when we don't have colors
+        PS1='\u@\h \W \$ '
+    else
+        PS1='\u@\h \w \$ '
+    fi
+    
+    alias ll='ls -lAh'
 fi
 
 alias df='df -Th'
@@ -87,3 +108,5 @@ shopt -s expand_aliases
 shopt -s extglob
 
 unset use_color safe_term match_lhs sh
+
+[[ ${BLE_VERSION-} ]] && ble-attach

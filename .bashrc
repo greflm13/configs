@@ -4,13 +4,27 @@
 
 [[ $- != *i* ]] && return
 
-if ! [ -f $HOME/.local/share/blesh/ble.sh ]; then
-	git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git /tmp/ble.sh
-	make -C /tmp/ble.sh install PREFIX=~/.local
-	touch "$HOME/.blerc"
+# Install ble.sh if not present
+if ! [ -f "${HOME}/.local/share/blesh/ble.sh" ]; then
+    deps=(git make gawk)
+    fail=0
+
+    for dep in "${deps[@]}"; do
+        if ! command -v "$dep" >/dev/null; then
+            echo "Missing dependency: $dep"
+            fail=1
+        fi
+    done
+    if [ $fail -eq 0 ]; then
+        echo "First time setting up ble.sh"
+        git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git /tmp/ble.sh >/dev/null
+        make -C /tmp/ble.sh install PREFIX=~/.local >/dev/null
+        touch "${HOME}/.blerc"
+        rm -rf /tmp/ble.sh
+    fi
 fi
 
-[[ $- == *i* ]] &&
+[[ $- == *i* ]] && [ -f "${HOME}/.local/share/blesh/ble.sh" ] &&
   source "$HOME/.local/share/blesh/ble.sh" --rcfile "$HOME/.blerc" --noattach
 
 export PATH="${HOME}/.local/bin:$PATH"
@@ -71,9 +85,9 @@ if ${use_color}; then
 	# Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
 	if type -P dircolors >/dev/null; then
 		if [[ -f ~/.dir_colors ]]; then
-			eval $(dircolors -b ~/.dir_colors)
+			eval "$(dircolors -b ~/.dir_colors)"
 		elif [[ -f /etc/DIR_COLORS ]]; then
-			eval $(dircolors -b /etc/DIR_COLORS)
+			eval "$(dircolors -b /etc/DIR_COLORS)"
 		fi
 	fi
 
@@ -172,15 +186,15 @@ extract() {
 }
 
 mkcd() {
-	mkdir "$1" && cd "$1"
+	mkdir "$1" && cd "$1" || exit
 }
 
 dc() {
 	local dir="$1"
 	local dir="${dir:=$HOME}"
 	if [[ -d "$dir" ]]; then
-		cd "$dir" >/dev/null
-		eza -hl --color=auto
+		cd "$dir" >/dev/null || exit
+		ll
 	else
 		echo "bash: cl: $dir: Directory not found"
 	fi
@@ -202,7 +216,7 @@ note() {
 		cat "$HOME/.notes"
 	elif [[ "$1" == "-c" ]]; then
 		# clear file
-		printf "%s" >"$HOME/.notes"
+		printf "" >"$HOME/.notes"
 	else
 		# add all arguments to file
 		printf "%s\n" "$*" >>"$HOME/.notes"
@@ -210,50 +224,50 @@ note() {
 }
 
 gitclone() {
-	re='.*@(.*):[0-9]*\/?(.*)\/(.*)\.git'
-	if [[ $1 =~ $re ]]; then
-		mkdir -p $HOME/git/${BASH_REMATCH[1]}/${BASH_REMATCH[2]}
-		git clone $1 $HOME/git/${BASH_REMATCH[1]}/${BASH_REMATCH[2]}/${BASH_REMATCH[3]}
-	fi
+    re='.*@(.*):[0-9]*\/?(.*)\/(.*)\.git'
+    if [[ $1 =~ $re ]]; then
+        mkdir -p "${HOME}"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"
+        git clone "$1" "${HOME}"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"/"${BASH_REMATCH[3]}"
+    fi
 }
 
 gitpull() {
-	dir=$(pwd)
-	for folder in $(find "$HOME/git" -maxdepth 3 -mindepth 3 -type d | sort); do
-		cd $folder
-		echo -e "\033[0;34m$(pwd)\033[0m"
-		git pull
-	done
-	cd "$dir"
+    dir=$(pwd)
+    for folder in $(find "${HOME}/git" -maxdepth 3 -mindepth 3 -type d | sort); do
+        cd "$folder" || continue
+        echo -e "\033[0;34m$(pwd)\033[0m"
+        git pull
+    done
+    cd "$dir" || exit
 }
 
 gitdiff() {
 	dir=$(pwd)
 	for folder in $(find "$HOME/git" -maxdepth 3 -mindepth 3 -type d | sort); do
-		cd $folder
+		cd "$folder" || continue
 		git diff
 	done
-	cd "$dir"
+	cd "$dir" || exit
 }
 
 gitreset() {
 	dir=$(pwd)
 	for folder in $(find "$HOME/git" -maxdepth 3 -mindepth 3 -type d | sort); do
-		cd $folder
+		cd "$folder" || continue
 		git reset --hard
 	done
-	cd "$dir"
+	cd "$dir" || exit
 }
 
 gitblame() {
 	dir=$(pwd)
 	for folder in $(find "$HOME/git" -maxdepth 3 -mindepth 3 -type d | sort); do
-		cd $folder
+		cd "$folder" || continue
 		pwd | sed "s%$HOME/git/%%g"
 		git log --author="$1"
 		echo ""
 	done
-	cd "$dir"
+	cd "$dir" || exit
 }
 
 case ${TERM} in
@@ -266,12 +280,12 @@ esac
 
 command -v 1password >/dev/null && export SSH_AUTH_SOCK=~/.1password/agent.sock
 
+NPM_PACKAGES="${HOME}/.npm-packages"
+export PATH="$PATH:$NPM_PACKAGES/bin"
+
 # Preserve MANPATH if you already defined it somewhere in your config.
 # Otherwise, fall back to `manpath` so we can inherit from `/etc/manpath`.
 export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
-
-NPM_PACKAGES="${HOME}/.npm-packages"
-export PATH="$PATH:$NPM_PACKAGES/bin"
 
 export GOPATH="${HOME}/.go"
 export PATH="$PATH:$GOPATH"
