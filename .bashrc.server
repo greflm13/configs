@@ -12,7 +12,6 @@ if ! [ -f "${HOME}/.local/share/blesh/ble.sh" ]; then
     
     for dep in "${deps[@]}"; do
         if ! command -v "$dep" >/dev/null; then
-            echo "Missing dependency: $dep"
             fail=1
         fi
     done
