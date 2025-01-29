@@ -6,26 +6,25 @@
 
 # Install ble.sh if not present
 if ! [ -f "${HOME}/.local/share/blesh/ble.sh" ]; then
-    deps=(git make gawk)
-    fail=0
+	deps=(git make gawk)
+	fail=0
 
-    for dep in "${deps[@]}"; do
-        if ! command -v "$dep" >/dev/null; then
-            echo "Missing dependency: $dep"
-            fail=1
-        fi
-    done
-    if [ $fail -eq 0 ]; then
-        echo "First time setting up ble.sh"
-        git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git /tmp/ble.sh >/dev/null
-        make -C /tmp/ble.sh install PREFIX=~/.local >/dev/null
-        touch "${HOME}/.blerc"
-        rm -rf /tmp/ble.sh
-    fi
+	for dep in "${deps[@]}"; do
+	if ! command -v "$dep" >/dev/null; then
+		echo "Missing dependency: $dep"
+		fail=1
+	fi
+	done
+	if [ $fail -eq 0 ]; then
+	echo "First time setting up ble.sh"
+	git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git /tmp/ble.sh >/dev/null
+	make -C /tmp/ble.sh install PREFIX=~/.local >/dev/null
+	touch "${HOME}/.blerc"
+	rm -rf /tmp/ble.sh
+	fi
 fi
 
-[[ $- == *i* ]] && [ -f "${HOME}/.local/share/blesh/ble.sh" ] &&
-  source "$HOME/.local/share/blesh/ble.sh" --rcfile "$HOME/.blerc" --noattach
+[[ $- == *i* ]] && [ -f "${HOME}/.local/share/blesh/ble.sh" ] && source "${HOME}/.local/share/blesh/ble.sh" --rcfile "${HOME}/.blerc" --noattach
 
 export PATH="${HOME}/.local/bin:$PATH"
 export VISUAL=vim
@@ -34,7 +33,7 @@ export HISTSIZE=-1
 export HISTFILESIZE=-1
 export HISTCONTROL="erasedups"
 
-[[ -f ~/.colorscripts ]] && source ~/.colorscripts
+[[ -f ~/.colorscripts ]] && source "${HOME}/.colorscripts"
 
 if [[ ${EUID} != 0 ]]; then
 	if command -v "uwufetch" >/dev/null; then
@@ -50,7 +49,7 @@ if [[ ${EUID} != 0 ]]; then
 	elif command -v "screenfetch" >/dev/null; then
 		screenfetch
 	fi
-	[[ -f ~/.colorscripts ]] && colorpanes
+	[[ -f ${HOME}/.colorscripts ]] && colorpanes
 fi
 
 [ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
@@ -74,7 +73,7 @@ use_color=true
 # globbing instead of external grep binary.
 safe_term=${TERM//[^[:alnum:]]/?} # sanitize TERM
 match_lhs=""
-[[ -f ~/.dir_colors ]] && match_lhs="${match_lhs}$(<~/.dir_colors)"
+[[ -f ${HOME}/.dir_colors ]] && match_lhs="${match_lhs}$(<"${HOME}"/.dir_colors)"
 [[ -f /etc/DIR_COLORS ]] && match_lhs="${match_lhs}$(</etc/DIR_COLORS)"
 [[ -z ${match_lhs} ]] &&
 	type -P dircolors >/dev/null &&
@@ -82,10 +81,10 @@ match_lhs=""
 [[ $'\n'${match_lhs} == *$'\n'"TERM "${safe_term}* ]] && use_color=true
 
 if ${use_color}; then
-	# Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
+	# Enable colors for ls, etc.  Prefer ${HOME}/.dir_colors #64489
 	if type -P dircolors >/dev/null; then
-		if [[ -f ~/.dir_colors ]]; then
-			eval "$(dircolors -b ~/.dir_colors)"
+		if [[ -f ${HOME}/.dir_colors ]]; then
+			eval "$(dircolors -b "${HOME}"/.dir_colors)"
 		elif [[ -f /etc/DIR_COLORS ]]; then
 			eval "$(dircolors -b /etc/DIR_COLORS)"
 		fi
@@ -126,7 +125,7 @@ fi
 
 unset use_color safe_term match_lhs sh
 
-alias cp="cp -i"     # confirm before overwriting something
+alias cp="cp -i"	 # confirm before overwriting something
 alias free='free -h'
 alias more=less
 alias fuck='sudo $(fc -ln -1)'
@@ -171,7 +170,7 @@ extract() {
 		*.gz) c=(gunzip) ;;
 		*.rar) c=(unrar x) ;;
 		*.xz) c=(unxz) ;;
-		*.zip) c=(unzip) ;;
+		*.zip) c=(unzip -d "${i%.zip}") ;;
 		*.zst) c=(unzstd) ;;
 		*)
 			echo "$0: unrecognized file extension: \`$i'" >&2
@@ -196,7 +195,7 @@ dc() {
 		cd "$dir" >/dev/null || exit
 		ll
 	else
-		echo "bash: cl: $dir: Directory not found"
+		echo "bash: dc: $dir: Directory not found"
 	fi
 }
 
@@ -224,21 +223,26 @@ note() {
 }
 
 gitclone() {
-    re='.*@(.*):[0-9]*\/?(.*)\/(.*)\.git'
-    if [[ $1 =~ $re ]]; then
-        mkdir -p "${HOME}"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"
-        git clone "$1" "${HOME}"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"/"${BASH_REMATCH[3]}"
-    fi
+	sshre='.*@.*:[0-9]*\/?(.*)\/(.*)\.git'
+	httpre='https?:\/\/(.*)\/(.*)\/(.*).git\/?'
+	if [[ $1 =~ $sshre ]]; then
+		mkdir -p "$HOME"/git/"${BASH_REMATCH[1]}"
+		git clone "$1" "$HOME"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"
+	fi
+	if [[ $1 =~ $httpre ]]; then
+		mkdir -p "$HOME"/git/"${BASH_REMATCH[1]}"
+		git clone "$1" "$HOME"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"
+	fi
 }
 
 gitpull() {
-    dir=$(pwd)
-    for folder in $(find "${HOME}/git" -maxdepth 3 -mindepth 3 -type d | sort); do
-        cd "$folder" || continue
-        echo -e "\033[0;34m$(pwd)\033[0m"
-        git pull
-    done
-    cd "$dir" || exit
+	dir=$(pwd)
+	for folder in $(find "$HOME/git" -maxdepth 3 -mindepth 3 -type d | sort); do
+		cd "$folder" || continue
+		echo -e "\033[0;34m$(pwd | sed "s%$HOME/git/%%g")\033[0m"
+		git pull
+	done
+	cd "$dir" || exit
 }
 
 gitdiff() {
@@ -272,13 +276,13 @@ gitblame() {
 
 case ${TERM} in
 xterm* | rxvt* | Eterm* | aterm | kterm | gnome* | interix | konsole*)
-	[[ -f ~/.pureline.conf ]] && source ~/.pureline/pureline ~/.pureline.conf
+	[[ -f ${HOME}/.pureline.conf ]] && source "${HOME}"/.pureline/pureline "${HOME}"/.pureline.conf
 	;;
 esac
 
 [[ ${BLE_VERSION-} ]] && ble-attach
 
-command -v 1password >/dev/null && export SSH_AUTH_SOCK=~/.1password/agent.sock
+command -v 1password >/dev/null && export SSH_AUTH_SOCK=${HOME}/.1password/agent.sock
 
 NPM_PACKAGES="${HOME}/.npm-packages"
 export PATH="$PATH:$NPM_PACKAGES/bin"

@@ -24,7 +24,7 @@ if ! [ -f "${HOME}/.local/share/blesh/ble.sh" ]; then
     fi
 fi
 
-[[ $- == *i* ]] && [ -f "${HOME}/.local/share/blesh/ble.sh" ] && source "$HOME/.local/share/blesh/ble.sh" --rcfile "$HOME/.blerc" --noattach
+[[ $- == *i* ]] && [ -f "${HOME}/.local/share/blesh/ble.sh" ] && source "${HOME}/.local/share/blesh/ble.sh" --rcfile "${HOME}/.blerc" --noattach
 
 export PATH="${HOME}/.local/bin:$PATH"
 export VISUAL=vim
@@ -42,17 +42,17 @@ use_color=true
 # globbing instead of external grep binary.
 safe_term=${TERM//[^[:alnum:]]/?} # sanitize TERM
 match_lhs=""
-[[ -f ~/.dir_colors ]] && match_lhs="${match_lhs}$(<~/.dir_colors)"
+[[ -f ${HOME}/.dir_colors ]] && match_lhs="${match_lhs}$(<"${HOME}"/.dir_colors)"
 [[ -f /etc/DIR_COLORS ]] && match_lhs="${match_lhs}$(</etc/DIR_COLORS)"
 [[ -z ${match_lhs} ]] && type -P dircolors >/dev/null &&
 match_lhs=$(dircolors --print-database)
 [[ $'\n'${match_lhs} == *$'\n'"TERM "${safe_term}* ]] && use_color=true
 
 if ${use_color}; then
-    # Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
+    # Enable colors for ls, etc.  Prefer ${HOME}/.dir_colors #64489
     if type -P dircolors >/dev/null; then
-        if [[ -f ~/.dir_colors ]]; then
-            eval "$(dircolors -b ~/.dir_colors)"
+        if [[ -f ${HOME}/.dir_colors ]]; then
+            eval "$(dircolors -b "${HOME}"/.dir_colors)"
             elif [[ -f /etc/DIR_COLORS ]]; then
             eval "$(dircolors -b /etc/DIR_COLORS)"
         fi
