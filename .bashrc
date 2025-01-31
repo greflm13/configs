@@ -223,7 +223,7 @@ note() {
 }
 
 gitclone() {
-	sshre='.*@.*:[0-9]*\/?(.*)\/(.*)\.git'
+	sshre='.*@.*:[0-9]*(.*)\/(.*)\.git'
 	httpre='https?:\/\/(.*)\/(.*)\/(.*).git\/?'
 	if [[ $1 =~ $sshre ]]; then
 		mkdir -p "$HOME"/git/"${BASH_REMATCH[1]}"
