@@ -226,12 +226,12 @@ gitclone() {
 	sshre='.*@.*:[0-9]*(.*)\/(.*)\.git'
 	httpre='https?:\/\/(.*)\/(.*)\/(.*).git\/?'
 	if [[ $1 =~ $sshre ]]; then
-		mkdir -p "$HOME"/git/"${BASH_REMATCH[1]}"
-		git clone "$1" "$HOME"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"
+		mkdir -p "$HOME"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"
+		git clone "$1" "$HOME"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"/"${BASH_REMATCH[3]}"
 	fi
 	if [[ $1 =~ $httpre ]]; then
 		mkdir -p "$HOME"/git/"${BASH_REMATCH[1]}"
-		git clone "$1" "$HOME"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"
+		git clone "$1" "$HOME"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"/"${BASH_REMATCH[3]}"
 	fi
 }
 
