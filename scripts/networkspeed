@@ -1,0 +1,23 @@
+#!/bin/bash
+
+interface=$(ip route get 1.1.1.1 | head -n1 | awk '{print $5}')
+previousRX=$(cat "/sys/class/net/${interface}/statistics/rx_bytes")
+previousTX=$(cat "/sys/class/net/${interface}/statistics/tx_bytes")
+
+while true; do
+    sleep 1 &
+    interface=$(ip route get 1.1.1.1 | head -n1 | awk '{print $5}')
+
+    currentRX=$(cat "/sys/class/net/${interface}/statistics/rx_bytes")
+    currentTX=$(cat "/sys/class/net/${interface}/statistics/tx_bytes")
+
+    RX=$(echo $((currentRX - previousRX)) | numfmt --to=iec)
+    TX=$(echo $((currentTX - previousTX)) | numfmt --to=iec)
+
+    echo "${RX}b/s  ${TX}b/s"
+
+    previousRX=$currentRX
+    previousTX=$currentTX
+
+    wait # for sleep
+done

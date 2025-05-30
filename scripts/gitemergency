@@ -1,0 +1,12 @@
+#!/bin/bash
+
+gitdirs=$(find -name ".git" -type d | sed 's%/.git%%g')
+for d in $gitdirs; do
+	status=$(git status | grep -c "Changes not staged for commit:")
+	if [ $status -gt 0 ]; then
+		git checkout -b EmergencyCheckout
+		git add -A
+		git commit -m "Emergency Commit!"
+		git push --force
+	fi
+done

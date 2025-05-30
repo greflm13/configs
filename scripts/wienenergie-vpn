@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ -n "$1" ]; then
+    otp=$1
+fi
+
+if [[ -z "$otp" ]]; then
+    echo "Usage: $0 [OTP]"
+    exit 1
+fi
+
+user=$(op read "op://Employee/WienEnergieVPN/username")
+password=$(op read "op://Employee/WienEnergieVPN/password")
+
+if [[ -z "$user" || -z "$password" ]]; then
+    echo "Username or password not set."
+    exit 1
+fi
+
+expect $HOME/scripts/wienenergie-vpn.exp $user $password $otp

@@ -1,0 +1,29 @@
+#!/usr/bin/expect -f
+
+set user [lindex $argv 0]
+set password [lindex $argv 1]
+set hotp [lindex $argv 2]
+set timeout -1
+
+if { $hotp == "" } {
+	puts "wienenergie-vpn.exp <hotp>"
+	exit 1
+}
+
+spawn sudo openconnect https://einwahl.blizznet.at/kbc
+#expect "*nter 'yes' to accept, 'no' to abort; anything else to view: "
+#send -- "yes\r"
+expect "*sername:"
+send -- "$user\r"
+expect "*assword:"
+send -- "$password\r"
+expect "*assword:"
+send -- "$hotp\r"
+
+sleep 2
+
+exec sudo sh -c "echo 'nameserver 127.0.0.53' > /etc/resolv.conf"
+exec sudo sh -c "echo 'search srv.kcservices.at' >> /etc/resolv.conf"
+
+interact
+

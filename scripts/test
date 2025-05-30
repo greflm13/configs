@@ -1,0 +1,11 @@
+ dmenu_command="dmenu -i -nb #08090c -nf #f6f6f6 -sb #3e4451 -sf #f6f6f6"
+ sinkids="$(wpctl status | sed '0,/Audio/d' | sed '/Video/,$d' | sed '0,/Sinks/d' | sed '/Sink endpoints/,$d' | sed '$d' | sed     -s 's/\*//g' | awk '{print $2}' | sed -s 's/\.//g')"
+names="$(for id in $sinkids; do wpctl inspect $id | grep node.description | sed -s 's/^[^"]*"//g' | sed -s 's/"//g'; done)"
+chosen="$(echo -e "$names" | $dmenu_command -l "$(echo "$sinkids" | wc -l)" -p "Audio Device")"
+
+
+for i in "${!names[@]}"; do
+   if [[ "${names[$i]}" = "${chosen}" ]]; then
+       echo "${i}";
+   fi
+done

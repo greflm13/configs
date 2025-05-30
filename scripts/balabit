@@ -1,0 +1,51 @@
+#!/bin/bash
+
+magipassword="$(op read "op://employee/magenta/password")"
+magiuser="$(op read "op://employee/magenta/username")"
+hostuser="$(op read "op://employee/magenta/hostuser")"
+ssh_key="${HOME}/.ssh/id_magenta_ed25519"
+sshconfig="${HOME}/.ssh/config.d/magenta"
+
+if [ $# -eq 0 ]; then
+    echo "Usage: balabit [SSH_OPTIONS] <HOSTNAME> [COMMAND]"
+else
+    regex='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
+    defcommand="grep 'Flo Greistorfer' ~/.bashrc >/dev/null || curl -sSL https://raw.githubusercontent.com/greflm13/configs/main/.bashrc.server > ~/.bashrc; exec bash -l"
+    hostname=""
+    ssh_options=()
+    command=()
+    
+    for arg in "$@"; do
+        if [[ -z "$hostname" && ($arg =~ $regex || $(
+                        grep -q "^Host $arg" "$sshconfig"
+                        echo $?
+            ) -eq 0) ]]; then
+            hostname=$arg
+            elif [[ -n "$hostname" ]]; then
+            command+=("$arg")
+        else
+            ssh_options+=("$arg")
+        fi
+    done
+    
+    if [ -z "$hostname" ]; then
+        echo "could not find host in $sshconfig, please check config file"
+        exit 1
+    fi
+    
+    if [[ ! $hostname =~ $regex ]]; then
+        IP=$(grep "$hostname" "$sshconfig" -A 1 | grep Hostname | head -n1 | awk '{print $2}')
+        if [[ $IP =~ $regex ]]; then
+            hostname=$IP
+        else
+            echo "could not find: $hostname in $sshconfig"
+            exit 1
+        fi
+    fi
+    
+    if [ -z "${command[*]}" ]; then
+        sshpass -p "$magipassword" ssh -qi "$ssh_key" "${ssh_options[@]}" -A -o UserKnownHostsFile=/dev/null "gu=$magiuser@$hostuser@$hostname@balabit" -t "$defcommand"
+    else
+        sshpass -p "$magipassword" ssh -qi "$ssh_key" "${ssh_options[@]}" -A -o UserKnownHostsFile=/dev/null "gu=$magiuser@$hostuser@$hostname@balabit" "${command[@]}"
+    fi
+fi
