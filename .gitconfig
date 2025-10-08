@@ -11,6 +11,8 @@
 	renames = copies
 [fetch]
 	parallel = 0
+[gpg]
+	format = ssh
 [init]
 	defaultBranch = main
 [merge]
@@ -26,11 +28,16 @@
 [status]
 	showStash = true
 
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
 [user]
-#	email = florian.greistorfer@cancom.com
-	name = Flo Greistorfer
-	signingkey = 65BA18EB3738BD5EEDC55E44331DFBE683712DC9
+	name = Florian Greistorfer
+	email = flo.greistorfer@sorogon.eu
+	signingkey = /home/user/.ssh/id_ed25519
+
 [author]
 	email = flo.greistorfer@sorogon.eu
-[committer]
-	email = florian.greistorfer@cancom.com
