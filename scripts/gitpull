@@ -1,8 +1,8 @@
 #!/bin/bash
 dir=$(pwd)
-for folder in $(find "${HOME}/git" -maxdepth 3 -mindepth 3 -type d | sort); do
-    cd "$folder" || exit
-    echo -e "\033[0;34m$(pwd)\033[0m"
-    git pull
+find "$HOME/git" -name ".git" -type d | while read -r folder; do
+  cd "${folder%/.git}" || continue
+  echo -e "\033[1;34m$(pwd | sed "s%$HOME/git/%%g")\033[0m"
+  git pull
 done
-cd "$dir" || exit
+cd "${dir}" || return

@@ -246,55 +246,68 @@ note() {
 }
 
 gitclone() {
-	sshre='.*@(.*):[0-9]*(.*)\/(.*)\.git'
-	httpre='https?:\/\/(.*)\/(.*)\/(.*).git\/?'
-	if [[ $1 =~ $sshre ]]; then
-		mkdir -p "$HOME"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"
-		git clone "$1" "$HOME"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"/"${BASH_REMATCH[3]}"
+	local url="$1"
+	local base="$HOME/git"
+
+	local norm
+	if ! norm=$(git ls-remote --get-url "$url" 2>/dev/null); then
+		echo "Invalid Git repository URL"
+		return 1
 	fi
-	if [[ $1 =~ $httpre ]]; then
-		mkdir -p "$HOME"/git/"${BASH_REMATCH[1]}"
-		git clone "$1" "$HOME"/git/"${BASH_REMATCH[1]}"/"${BASH_REMATCH[2]}"/"${BASH_REMATCH[3]}"
-	fi
+
+	norm="${norm#*://}"
+	norm="${norm#*@}"
+	norm="${norm/:/\/}"
+
+	local host path
+
+	host="${norm%%/*}"
+	path="${norm#*/}"
+	path="${path%.git}"
+
+	local dest="$base/$host/$path"
+
+	mkdir -p "$(dirname "$dest")"
+	git clone "$url" "$dest"
 }
 
 gitpull() {
-	dir=$(pwd)
-	for folder in $(find "$HOME/git" -name ".git" -type d | sort | sed 's|/\.git||g'); do
-		cd "${folder}" || return
-		echo -e "\033[1;34m$(pwd | sed "s%$HOME/git/%%g")\033[0m"
-		git pull
-	done
-	cd "${dir}" || return
+  dir=$(pwd)
+  find "$HOME/git" -name ".git" -type d | while read -r folder; do
+    cd "${folder%/.git}" || continue
+    echo -e "\033[1;34m$(pwd | sed "s%$HOME/git/%%g")\033[0m"
+    git pull
+  done
+  cd "${dir}" || return
 }
 
 gitdiff() {
-	dir=$(pwd)
-	for folder in $(find "$HOME/git" -name ".git" -type d | sort | sed 's|/\.git||g'); do
-		cd "${folder}" || return
-		git diff
-	done
-	cd "${dir}" || return
+  dir=$(pwd)
+  find "$HOME/git" -name ".git" -type d | while read -r folder; do
+    cd "${folder%/.git}" || continue
+    git diff
+  done
+  cd "${dir}" || return
 }
 
 gitreset() {
-	dir=$(pwd)
-	for folder in $(find "$HOME/git" -name ".git" -type d | sort | sed 's|/\.git||g'); do
-		cd "${folder}" || return
-		git reset --hard
-	done
-	cd "${dir}" || return
+  dir=$(pwd)
+  find "$HOME/git" -name ".git" -type d | while read -r folder; do
+    cd "${folder%/.git}" || continue
+    git reset --hard
+  done
+  cd "${dir}" || return
 }
 
 gitblame() {
-	dir=$(pwd)
-	for folder in $(find "$HOME/git" -name ".git" -type d | sort | sed 's|/\.git||g'); do
-		cd "${folder}" || return
-		pwd | sed "s%$HOME/git/%%g"
-		git log --author="$1"
-		echo ""
-	done
-	cd "${dir}" || return
+  dir=$(pwd)
+  find "$HOME/git" -name ".git" -type d | while read -r folder; do
+    cd "${folder%/.git}" || continue
+    pwd | sed "s%$HOME/git/%%g"
+    git log --author="$1"
+    echo ""
+  done
+  cd "${dir}" || return
 }
 
 up() {
