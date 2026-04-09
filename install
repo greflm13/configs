@@ -54,7 +54,7 @@ fi
 
 if [ -v $DONE ] && [ -x "$(command -v npm)" ]; then
 	cd ${HOME}
-	git clone https://github.com/chris-marsh/pureline.git ${HOME}/.pureline
+	git clone https://github.com/greflm13/pureline.git ${HOME}/.pureline
 	cp .pureline.conf ~/.pureline.conf
 	echo "creating non sudo npm storage"
 	mkdir -p "${HOME}/.npm-packages"
